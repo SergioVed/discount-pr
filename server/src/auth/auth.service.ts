@@ -37,7 +37,7 @@ export class AuthService {
         if (!candidate) {
             throw new BadRequestException('no user with this email')
         }
-        const comparePassword = bcrypt.compare(dto.password, candidate.password)
+        const comparePassword = await bcrypt.compare(dto.password, candidate.password)
         if (!comparePassword) {
             throw new BadRequestException('incorrect password')
         }
@@ -57,7 +57,7 @@ export class AuthService {
         if (!userData) {
             throw new BadRequestException('invalid refresh_token')
         }
-        const user = await this.userService.getUserById(userData.payload.user_id)
+        const user = await this.userService.getUserById(userData.user_id)
         if (!user) {
             throw new BadRequestException('invalid user')
         }

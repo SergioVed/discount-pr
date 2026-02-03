@@ -12,6 +12,9 @@ import { SignIn_invite } from './sign-in-invites/sing-in-invite.model';
 import { TokensModule } from './tokens/tokens.module';
 import { AuthModule } from './auth/auth.module';
 import { Token } from './tokens/token.model';
+import { ClaimRestaurantModule } from './claim-restaurant/claim-restaurant.module';
+import { Claim_request } from './claim-restaurant/claim-restaurant.model';
+import { GoogleModule } from './google/google.module';
 
 @Module({
    imports: [
@@ -23,7 +26,7 @@ import { Token } from './tokens/token.model';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Restaurant, Special_offer, SignIn_invite, Token],
+      models: [User, Restaurant, Special_offer, SignIn_invite, Token, Claim_request],
       synchronize: true,
       autoLoadModels: true
     }),
@@ -32,7 +35,9 @@ import { Token } from './tokens/token.model';
     SpecialOffersModule,
     SignInInvitesModule,
     TokensModule,
-    AuthModule
+    AuthModule,
+    ClaimRestaurantModule,
+    GoogleModule
   ],
   controllers: [],
   providers: [],

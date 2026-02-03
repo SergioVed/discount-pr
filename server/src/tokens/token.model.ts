@@ -10,15 +10,15 @@ interface TokenCreationAttrs {
 export class Token extends Model<Token, TokenCreationAttrs> {
 
     @Column({type: DataType.INTEGER, primaryKey: true, autoIncrement: true})
-    token_id: number
+    declare token_id: number
 
     @Column({type: DataType.STRING, allowNull: false})
-    token: string
+    declare token: string
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})
-    user_id: number
+    declare user_id: number
 
     @BelongsTo(() => User)
-    user: User
+    declare user: User
 }

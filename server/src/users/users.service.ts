@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
-import { SignIn_invite } from 'src/sign-in-invites/sing-in-invite.model';
 
 @Injectable()
 export class UsersService {

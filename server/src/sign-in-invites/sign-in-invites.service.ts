@@ -28,6 +28,9 @@ export class SignInInvitesService {
     }
 
     async getInviteByToken (token: string) {
+        if (!token) {
+            throw new BadRequestException("no invite token")
+        }
         const invite = await this.inviteModel.findOne({where: {token}})
         return invite
     }

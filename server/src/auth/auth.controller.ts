@@ -13,25 +13,21 @@ export class AuthController {
     async register (
         @Body() dto: CreateUserDto, 
         @Response({passthrough: true}) res: express.Response,
-        @Query('token', InviteLinkPipe) token: string
+        @Query('token', InviteLinkPipe) token: string,
     ) {
         const user = await this.authService.register({...dto, token})
+        const refresh_token = user.tokens.refresh_token
 
-        const access_token = user.tokens.access_token
-        res.cookie('access_token', access_token, {
-            httpOnly: true
-        })
+        this.saveCookies(res, refresh_token)
         return user
     }
 
     @Post('login')
     async login (@Body() dto: CreateUserDto, @Response({passthrough: true}) res: express.Response) {
         const user = await this.authService.login(dto)
-        
-        const access_token = user.tokens.access_token
-        res.cookie('access_token', access_token, {
-            httpOnly: true
-        })
+        const refresh_token = user.tokens.refresh_token
+
+        this.saveCookies(res, refresh_token)
         return user
     }
 
@@ -39,12 +35,16 @@ export class AuthController {
     async refresh (@Request() req: express.Request, @Response({passthrough: true}) res: express.Response) {
         const {refresh_token} = req.cookies
         const user = await this.authService.refresh(refresh_token)
+        const new_refresh_token = user.tokens.refresh_token
+        
+        this.saveCookies(res, new_refresh_token)
+        return user
+    }
 
-        const access_token = user.tokens.access_token
-        res.cookie('access_token', access_token, {
+    saveCookies (res: express.Response, refresh_token: string) {
+        res.cookie('refresh_token', refresh_token, {
             httpOnly: true
         })
-        return user
     }
 
 }

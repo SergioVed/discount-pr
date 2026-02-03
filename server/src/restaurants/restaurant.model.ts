@@ -1,4 +1,3 @@
-import { Timestamp } from "rxjs";
 import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 interface RestaurantCreationAttrs {

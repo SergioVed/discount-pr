@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { CreateRestaurantDto } from './dto/restaurant.dto';
 import { RestaurantsService } from './restaurants.service';
 
@@ -17,5 +17,10 @@ export class RestaurantsController {
     async getAllRestaurants () {
         const restaurants = await this.restaurantService.getAllRestaurants()
         return restaurants
+    }
+
+    @Put()
+    async updateRestaurant () {
+        
     }
 }
