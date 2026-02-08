@@ -1,20 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UsersModule } from './users/users.module';
-import { RestaurantsModule } from './restaurants/restaurants.module';
-import { User } from './users/user.model';
-import { Restaurant } from './restaurants/restaurant.model';
-import { SpecialOffersModule } from './special-offers/special-offers.module';
-import { Special_offer } from './special-offers/special-offer.model';
-import { SignInInvitesModule } from './sign-in-invites/sign-in-invites.module';
-import { SignIn_invite } from './sign-in-invites/sing-in-invite.model';
-import { TokensModule } from './tokens/tokens.module';
-import { AuthModule } from './auth/auth.module';
-import { Token } from './tokens/token.model';
-import { ClaimRestaurantModule } from './claim-restaurant/claim-restaurant.module';
-import { Claim_request } from './claim-restaurant/claim-restaurant.model';
-import { GoogleModule } from './google/google.module';
+import { UserModel } from './infrastructure/db/entities/UserModel';
+import { UsersModule } from './interface/modules/UserModule';
+import { RestaurantModule } from './interface/modules/RestaurantModule';
+import { RestaurantModel } from './infrastructure/db/entities/RestaurantModel';
+import { TokenModule } from './interface/modules/TokenModule';
 
 @Module({
    imports: [
@@ -26,18 +17,13 @@ import { GoogleModule } from './google/google.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Restaurant, Special_offer, SignIn_invite, Token, Claim_request],
+      models: [UserModel, RestaurantModel],
       synchronize: true,
       autoLoadModels: true
     }),
+    TokenModule,
     UsersModule,
-    RestaurantsModule,
-    SpecialOffersModule,
-    SignInInvitesModule,
-    TokensModule,
-    AuthModule,
-    ClaimRestaurantModule,
-    GoogleModule
+    RestaurantModule
   ],
   controllers: [],
   providers: [],
