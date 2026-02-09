@@ -13,12 +13,12 @@ export class TokenService {
     ) {}
 
     generateTokens (payload: Payload) {
-        const accessToken = this.jwtService.sign(payload, {
+        const accessToken = this.jwtService.sign({...payload}, {
             secret: process.env.ACCESS_SECRET,
             expiresIn: '30m'
         })
 
-        const refreshToken = this.jwtService.sign(payload, {
+        const refreshToken = this.jwtService.sign({...payload}, {
             secret: process.env.REFRESH_SECRET,
             expiresIn: '15d'
         })
@@ -32,7 +32,7 @@ export class TokenService {
     async saveToken (dto: CreateTokenDto) {
         const token = await this.tokenRepository.getOne(dto.userId)
         if (token) {
-            return await this.tokenRepository.updateToken(token.tokenId, token.token)
+            return await this.tokenRepository.updateToken(token.tokenId, dto.token)
         }
         return await this.tokenRepository.saveToken(dto)
     }

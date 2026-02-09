@@ -4,4 +4,5 @@ import { CreateUserDto } from "./dto/CreateUserDto";
 export interface IUserRepository {
     getAllUsers(): Promise<User[]>
     createUser(dto: CreateUserDto): Promise<User>
+    findUserByEmail(email: string): Promise<User | null>
 }

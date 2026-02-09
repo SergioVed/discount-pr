@@ -6,6 +6,8 @@ import { UsersModule } from './interface/modules/UserModule';
 import { RestaurantModule } from './interface/modules/RestaurantModule';
 import { RestaurantModel } from './infrastructure/db/entities/RestaurantModel';
 import { TokenModule } from './interface/modules/TokenModule';
+import { AuthModule } from './interface/modules/AuthModule';
+import { SignInInviteModule } from './interface/modules/SignInInviteModule';
 
 @Module({
    imports: [
@@ -23,7 +25,9 @@ import { TokenModule } from './interface/modules/TokenModule';
     }),
     TokenModule,
     UsersModule,
-    RestaurantModule
+    RestaurantModule,
+    AuthModule,
+    SignInInviteModule
   ],
   controllers: [],
   providers: [],

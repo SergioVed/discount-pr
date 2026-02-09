@@ -15,10 +15,19 @@ export class UserRepositoryImpl implements IUserRepository {
         private userMapper: UserMapper
     ) {}
 
+    async findUserByEmail(email: string): Promise<User | null> {
+        const user = await this.userModel.findOne({where: {email}})
+        if (!user) {
+            return null
+        }
+        return this.userMapper.toDomain(user)
+    }
+
     async getAllUsers(): Promise<User[]> {
         const users = await this.userModel.findAll();
         return users.map((e) => this.userMapper.toDomain(e))
     }
+
     async createUser(dto: CreateUserDto): Promise<User> {
         const modelData = {
             first_name: dto.firstName,

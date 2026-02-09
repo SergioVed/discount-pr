@@ -13,5 +13,6 @@ import { UserMapper } from 'src/infrastructure/db/mappers/UserMapper';
     provide: 'IUserRepository',
     useClass: UserRepositoryImpl
   }],
+  exports: [UserService]
 })
 export class UsersModule {}

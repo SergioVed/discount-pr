@@ -13,7 +13,8 @@ import { JwtModule } from "@nestjs/jwt";
         provide: 'ITokenRepository',
         useClass: TokenRepositoryImpl
     }],
-    controllers: []
+    controllers: [],
+    exports: [TokenService]
 })
 
 export class TokenModule {}
