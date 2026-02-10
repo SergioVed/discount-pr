@@ -30,6 +30,7 @@
     "@sequelize/postgres": "^7.0.0-alpha.47",
     "axios": "^1.13.4",
     "bcrypt": "^6.0.0",
+    "class-validator": "^0.14.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",

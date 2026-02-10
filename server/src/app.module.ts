@@ -8,6 +8,7 @@ import { RestaurantModel } from './infrastructure/db/entities/RestaurantModel';
 import { TokenModule } from './interface/modules/TokenModule';
 import { AuthModule } from './interface/modules/AuthModule';
 import { SignInInviteModule } from './interface/modules/SignInInviteModule';
+import { SpecialOfferModule } from './interface/modules/SpecialOfferModule';
 
 @Module({
    imports: [
@@ -27,7 +28,8 @@ import { SignInInviteModule } from './interface/modules/SignInInviteModule';
     UsersModule,
     RestaurantModule,
     AuthModule,
-    SignInInviteModule
+    SignInInviteModule,
+    SpecialOfferModule
   ],
   controllers: [],
   providers: [],
