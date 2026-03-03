@@ -1,14 +1,10 @@
 import { Token } from "src/core/entities/Token/Token"
 import { TokenModel } from "../entities/TokenModel"
 import { Injectable } from "@nestjs/common"
-
-interface Mapper <T, E> {
-    toDomain(entity: T): E
-    toModel(entity: E): any
-}
+import { CreateTokenDto } from "src/core/repository/TokenRepository/dto/CreateTokenDto"
 
 @Injectable()
-export class TokenMapper implements Mapper<TokenModel, Token> {
+export class TokenMapper {
     toDomain(entity: TokenModel): Token {
         return new Token (
             entity.token_id,
@@ -16,11 +12,17 @@ export class TokenMapper implements Mapper<TokenModel, Token> {
             entity.user_id
         )
     }
-    toModel(entity: Token) {
+    toPersistance(entity: Token) {
         return {
             token_id: entity.tokenId,
             token: entity.token,
             user_id: entity.userId
+        }
+    }
+    toCreationPersistance (dto: CreateTokenDto) {
+        return {
+            token: dto.token,
+            user_id: dto.userId
         }
     }
 

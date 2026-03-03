@@ -1,8 +1,7 @@
 
-export class CreateUserDto {
+export class CreateUserDtoClient {
     firstName: string
     lastName: string
     email: string
     password: string
-    role: 'MANAGER' | 'ADMIN'
 }

@@ -1,6 +1,6 @@
 
 export class CreateSpecialOfferDto {
-    crearedBy: number
+    createdBy: number
     restaurantId: number
     title: string
     description: string

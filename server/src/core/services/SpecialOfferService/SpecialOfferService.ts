@@ -10,12 +10,13 @@ export class SpecialOfferService {
     ) {}
 
     async createOffer (dto: CreateSpecialOfferDto) {
-        const offer = await this.specialOfferRepository.createOffer(dto)
+        const offer = await this.specialOfferRepository.create(dto)
         return offer
     }
 
     async getAllOffers () {
-        return await this.specialOfferRepository.getAllOffers()
+        const offers = await this.specialOfferRepository.getAll()
+        return offers
     }
 
     async getRestaurantOffer (restaurantId: number) {

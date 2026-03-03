@@ -13,14 +13,12 @@ export class TokenRepositoryImpl implements ITokenRepository {
         private tokenMapper: TokenMapper
     ) {}
 
-    async saveToken(dto: CreateTokenDto): Promise<Token> {
-        const modelData = {
-            token: dto.token,
-            user_id: dto.userId
-        }
-        const token = await this.tokenModel.create(modelData)
+    async create(dto: CreateTokenDto): Promise<Token> {
+        const persistance = this.tokenMapper.toCreationPersistance(dto)
+        const token = await this.tokenModel.create(persistance)
         return this.tokenMapper.toDomain(token)
     }
+    
     async getOne(userId: number): Promise<Token | null> {
         const token = await this.tokenModel.findOne({where: {user_id: userId}})
         if (!token) {
@@ -28,7 +26,8 @@ export class TokenRepositoryImpl implements ITokenRepository {
         }
         return this.tokenMapper.toDomain(token)
     }
-    async updateToken(tokenId: number, token: string): Promise<Token | null> {
+
+    async update(tokenId: number, token: string): Promise<Token | null> {
         const refresh_token = await this.tokenModel.findByPk(tokenId)
         if (refresh_token) {
             refresh_token.token = token

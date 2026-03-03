@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { CreateSpecialOfferDto } from "src/core/repository/SpecialOfferRepository/dto/CreateSpecialOfferDto";
 import { SpecialOfferService } from "src/core/services/SpecialOfferService/SpecialOfferService";
 
@@ -11,17 +11,17 @@ export class SpecialOfferController {
     ) {}
 
     @Post()
-    createOffer (dto: CreateSpecialOfferDto) {
-        return this.specialOfferService.createOffer(dto)
+    async createOffer (@Body() dto: CreateSpecialOfferDto) {
+        return await this.specialOfferService.createOffer(dto)
     }
 
     @Get()
-    getAllOffers () {
-        return this.specialOfferService.getAllOffers()
+    async getAllOffers () {
+        return await this.specialOfferService.getAllOffers()
     }
 
     @Get('/:restaurantId')
-    getRestaurantOffers (@Param('restaurantId') restautantId: number) {
-        return this.specialOfferService.getRestaurantOffer(restautantId)
+    async getRestaurantOffers (@Param('restaurantId') restautantId: number) {
+        return await this.specialOfferService.getRestaurantOffer(restautantId)
     }
 }

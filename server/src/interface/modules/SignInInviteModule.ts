@@ -5,16 +5,17 @@ import { SignInInviteService } from "src/core/services/SignInInviteService/SignI
 import { SignInInviteMapper } from "src/infrastructure/db/mappers/SignInInviteMapper";
 import { SignInInviteRepositoryImpl } from "src/infrastructure/db/repository/SignInInviteRepositoryImpl";
 import { SignInInviteController } from "../controllers/SignInInviteController";
+import { TokenModule } from "./TokenModule";
 
 
 @Module({
-    imports: [SequelizeModule.forFeature([SignInInviteModel])],
+    imports: [SequelizeModule.forFeature([SignInInviteModel]), TokenModule],
     providers: [SignInInviteMapper, SignInInviteService, {
         provide: 'ISignInInviteRepository',
         useClass: SignInInviteRepositoryImpl
     }],
     controllers: [SignInInviteController],
-    exports: [SignInInviteService]
+    exports: [SignInInviteService,  'ISignInInviteRepository']
 })
 
 export class SignInInviteModule {}

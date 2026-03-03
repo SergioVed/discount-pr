@@ -1,8 +1,8 @@
 
 export class CreateRestaurantDto {
-    readonly googlePlaceId: number
+    readonly googlePlaceId: string
     readonly name: string
-    readonly type: string
+    readonly types: string[]
     readonly googlemapsLink: string
     readonly address: string
     readonly phoneNum: string
@@ -12,4 +12,5 @@ export class CreateRestaurantDto {
     readonly websiteLink: string
     readonly description: string
     readonly userRatingsTotal: number
+    readonly lastSynced: Date
 }

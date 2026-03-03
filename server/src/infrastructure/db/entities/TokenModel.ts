@@ -20,4 +20,6 @@ export class TokenModel extends Model<TokenModel, TokenCreationAttrs> {
     @Column({type: DataType.INTEGER, allowNull: false})
     declare user_id: number
 
+    
+
 }

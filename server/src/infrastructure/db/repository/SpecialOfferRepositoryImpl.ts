@@ -13,9 +13,9 @@ export class SpecialOfferRepositoryImpl implements ISpecialOfferRepository {
         private specialOfferMapper: SpecialOfferMapper
     ) {}
 
-    async createOffer(dto: CreateSpecialOfferDto): Promise<SpecialOffer> {
+    async create(dto: CreateSpecialOfferDto): Promise<SpecialOffer> {
         const modelData = {
-            creared_by: dto.crearedBy,
+            created_by: dto.createdBy,
             restaurant_id: dto.restaurantId,
             title: dto.title,
             description: dto.description,
@@ -26,8 +26,8 @@ export class SpecialOfferRepositoryImpl implements ISpecialOfferRepository {
         const offer = await this.specialOfferModel.create(modelData)
         return this.specialOfferMapper.toDomain(offer)
     }
-    async getAllOffers(): Promise<SpecialOffer[]> {
-        const offers = await this.specialOfferModel.findAll()
+    async getAll(): Promise<SpecialOffer[]> {
+        const offers = await this.specialOfferModel.findAll({include: {all: true}})
         return offers.map(e => this.specialOfferMapper.toDomain(e))
     }
     async getRestaurantOffers(restaurantId: number): Promise<SpecialOffer[] | null> {

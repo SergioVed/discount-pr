@@ -1,7 +1,9 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { UserModel } from "./UserModel";
+import { RestaurantModel } from "./RestaurantModel";
 
 interface SpecialOfferCreationAttrs {
-    creared_by: number
+    created_by: number
     restaurant_id: number
     title: string
     description: string
@@ -13,28 +15,36 @@ interface SpecialOfferCreationAttrs {
 @Table({tableName: 'special_offer'})
 export class SpecialOfferModel extends Model<SpecialOfferModel, SpecialOfferCreationAttrs> {
     @Column({type: DataType.INTEGER, primaryKey: true, autoIncrement: true})
-    special_offer_id: number
+    declare special_offer_id: number
 
+    @ForeignKey(() => UserModel)
     @Column({type: DataType.INTEGER, allowNull: false})
-    creared_by: number
+    declare created_by: number
 
+    @ForeignKey(() => RestaurantModel)
     @Column({type: DataType.INTEGER, allowNull: false})
-    restaurant_id: number
+    declare restaurant_id: number
 
     @Column({type: DataType.STRING, allowNull: false})
-    title: string
+    declare title: string
 
     @Column({type: DataType.STRING, allowNull: false})
-    description: string
+    declare description: string
 
     @Column({type: DataType.BOOLEAN, allowNull: false})
-    isActive: boolean
+    declare isActive: boolean
 
     @Column({type: DataType.DATE, allowNull: false})
-    active_from: Date
+    declare active_from: Date
 
     @Column({type: DataType.DATE, allowNull: false})
-    active_to: Date
+    declare active_to: Date
+
+    @BelongsTo(() => RestaurantModel, {foreignKey: "restaurant_id"})
+    declare restaurant: RestaurantModel
+
+    @BelongsTo(() => UserModel, {foreignKey: "created_by", targetKey: "user_id"})
+    declare user: UserModel
 
     // picture
 }

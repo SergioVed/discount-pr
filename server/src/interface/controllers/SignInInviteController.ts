@@ -1,12 +1,10 @@
-
-
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { CreateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantDto';
-import { CreateSignInInviteDto } from 'src/core/repository/SignInInviteRepository/dto/CreateSignInInviteDto';
-import { CreateUserDto } from 'src/core/repository/UserRepository/dto/CreateUserDto';
-import { RestaurantsService } from 'src/core/services/RestaurantService/RestaurantService';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { CreateInviteClientDto } from 'src/core/repository/SignInInviteRepository/dto/CreateInviteClientDto';
 import { SignInInviteService } from 'src/core/services/SignInInviteService/SignInInviteService';
-import { UserService } from 'src/core/services/UserService/UserService';
+import { RoleGuard } from '../guards/RoleGuard';
+import { Roles } from '../decorators/RoleDecorator';
+import { AuthGuard } from '../guards/AuthGuard';
+import { IsActivated } from '../guards/IsActivatedGuard';
 
 @Controller('invites')
 export class SignInInviteController {
@@ -15,21 +13,20 @@ export class SignInInviteController {
         private signInInviteService: SignInInviteService
     ){}
 
+    @Roles("ADMIN")
+    @UseGuards(AuthGuard, RoleGuard, IsActivated)
     @Post()
-    async createInvite (@Body() dto: CreateSignInInviteDto) {
-        const invite = await this.signInInviteService.createInvite(dto)
+    async createInvite (@Body() dto: CreateInviteClientDto, @Req() req: any) {
+        const invite = await this.signInInviteService.createInvite({...dto, createdBy: req.user._userId})
         return invite
     }
 
+    @Roles("ADMIN")
+    @UseGuards(AuthGuard, RoleGuard)
     @Get()
     async getAllInvites () {
         const invites = await this.signInInviteService.getAllInvites()
         return invites
     }
 
-    @Get('/:token')
-    async getInviteByToken (@Param('token') token: string) {
-        const invite = await this.signInInviteService.getInviteByToken(token)
-        return invite
-    }
 }

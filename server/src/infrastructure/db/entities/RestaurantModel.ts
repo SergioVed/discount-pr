@@ -1,17 +1,20 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { SpecialOfferModel } from "./SpecialOfferModel";
+import { UserModel } from "./UserModel";
 
 interface RestaurantCreationAttrs {
-    google_place_id: number
+    google_place_id: string
     name: string
-    type: string
+    types: string[]
     googlemaps_link: string
-    address: string
+    formatted_address: string
     phone_num: string
     opening_hours: JSON
     price_level: number
     rating: number
     website_link: string
-    description: string
+    descriptuon: string
+    last_synced: Date
     user_ratings_total: number
 }
 
@@ -22,8 +25,12 @@ export class RestaurantModel extends Model<RestaurantModel, RestaurantCreationAt
     @Column({ type: DataType.INTEGER, primaryKey: true, autoIncrement: true })
     declare restaurant_id: number
 
-    @Column({ type: DataType.INTEGER, allowNull: false})
-    declare google_place_id: number
+    @ForeignKey(() => UserModel)
+    @Column({type: DataType.INTEGER, allowNull: true})
+    declare manager_id: number | null
+
+    @Column({ type: DataType.STRING, allowNull: false})
+    declare google_place_id: string
 
     @Column({ type: DataType.STRING, allowNull: false })
     declare name: string
@@ -62,4 +69,10 @@ export class RestaurantModel extends Model<RestaurantModel, RestaurantCreationAt
 
     @Column({type: DataType.INTEGER, allowNull: false})
     declare user_ratings_total: number
+
+    @HasMany(() => SpecialOfferModel)
+    declare offers: SpecialOfferModel[]
+
+    @BelongsTo(() => UserModel)
+    declare manager: UserModel
 }

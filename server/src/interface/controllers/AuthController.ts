@@ -1,5 +1,5 @@
 import { Body, Controller, Inject, Param, Post } from "@nestjs/common";
-import { CreateUserDto } from "src/core/repository/UserRepository/dto/CreateUserDto";
+import { CreateUserDtoClient } from "src/core/repository/UserRepository/dto/CreateUserDto";
 import { AuthService } from "src/core/services/AuthService/AuthService";
 
 
@@ -17,7 +17,7 @@ export class AuthController {
 
     @Post('register/:token')
     async register (
-        @Body() dto: CreateUserDto,
+        @Body() dto: CreateUserDtoClient,
         @Param('token') token: string
     ) {
         return await this.authService.register(dto, token)

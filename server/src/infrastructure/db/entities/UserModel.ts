@@ -1,4 +1,5 @@
-import { Column, DataType, HasMany, HasOne, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
+import { RestaurantModel } from "./RestaurantModel";
 
 interface UserCreationAttrs {
     first_name: string
@@ -14,9 +15,6 @@ export class UserModel extends Model<UserModel, UserCreationAttrs> {
 
     @Column({type: DataType.INTEGER, primaryKey: true, autoIncrement: true})
     declare user_id: number
-
-    @Column({type: DataType.INTEGER})
-    declare restaurant_id: number
 
     @Column({type: DataType.STRING, allowNull: false})
     declare first_name: string

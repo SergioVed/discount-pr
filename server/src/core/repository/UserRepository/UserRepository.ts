@@ -1,8 +1,10 @@
 import { User } from "src/core/entities/User/User";
-import { CreateUserDto } from "./dto/CreateUserDto";
+import { CreateUserDtoRepository } from "./dto/CreateUserDtoRepository";
 
 export interface IUserRepository {
-    getAllUsers(): Promise<User[]>
-    createUser(dto: CreateUserDto): Promise<User>
+    getAll(): Promise<User[]>
+    create(dto: CreateUserDtoRepository): Promise<User>
     findUserByEmail(email: string): Promise<User | null>
+    findById(id: number): Promise<User | null>
+    update(user: User): Promise<User | null>
 }

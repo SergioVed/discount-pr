@@ -9,6 +9,8 @@ import { TokenModule } from './interface/modules/TokenModule';
 import { AuthModule } from './interface/modules/AuthModule';
 import { SignInInviteModule } from './interface/modules/SignInInviteModule';
 import { SpecialOfferModule } from './interface/modules/SpecialOfferModule';
+import { ClaimRequestModule } from './interface/modules/ClaimRequestModule';
+import { SpecialOfferModel } from './infrastructure/db/entities/SpecialOfferModel';
 
 @Module({
    imports: [
@@ -20,7 +22,7 @@ import { SpecialOfferModule } from './interface/modules/SpecialOfferModule';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [UserModel, RestaurantModel],
+      models: [UserModel, RestaurantModel, SpecialOfferModel ],
       synchronize: true,
       autoLoadModels: true
     }),
@@ -29,7 +31,8 @@ import { SpecialOfferModule } from './interface/modules/SpecialOfferModule';
     RestaurantModule,
     AuthModule,
     SignInInviteModule,
-    SpecialOfferModule
+    SpecialOfferModule,
+    ClaimRequestModule
   ],
   controllers: [],
   providers: [],
