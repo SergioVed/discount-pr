@@ -1,5 +1,4 @@
-
 export class CreateRequestDto {
-    readonly userId: number
-    readonly restaurantId: number
+  readonly userId: number;
+  readonly restaurantId: number;
 }

@@ -13,8 +13,8 @@ import { ClaimRequestModule } from './interface/modules/ClaimRequestModule';
 import { SpecialOfferModel } from './infrastructure/db/entities/SpecialOfferModel';
 
 @Module({
-   imports: [
-    ConfigModule.forRoot({envFilePath: `.env.${process.env.NODE_ENV}.local`}),
+  imports: [
+    ConfigModule.forRoot({ envFilePath: `.env.${process.env.NODE_ENV}.local` }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: process.env.DB_HOST,
@@ -22,9 +22,9 @@ import { SpecialOfferModel } from './infrastructure/db/entities/SpecialOfferMode
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [UserModel, RestaurantModel, SpecialOfferModel ],
+      models: [UserModel, RestaurantModel, SpecialOfferModel],
       synchronize: true,
-      autoLoadModels: true
+      autoLoadModels: true,
     }),
     TokenModule,
     UsersModule,
@@ -32,7 +32,7 @@ import { SpecialOfferModel } from './infrastructure/db/entities/SpecialOfferMode
     AuthModule,
     SignInInviteModule,
     SpecialOfferModule,
-    ClaimRequestModule
+    ClaimRequestModule,
   ],
   controllers: [],
   providers: [],

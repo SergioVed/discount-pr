@@ -1,8 +1,7 @@
-import { DomainError } from "src/core/errors/base/DomainError";
-
+import { DomainError } from 'src/core/errors/base/DomainError';
 
 export class RoleInvalidError extends DomainError {
-    constructor (role: string) {
-        super (`Role ${role.toLowerCase} is invalid`)
-    }
+  constructor(role: string) {
+    super(`Role ${role.toLowerCase} is invalid`);
+  }
 }

@@ -1,5 +1,4 @@
-
 export class CreateInviteClientDto {
-    emailTo: string
-    createdBy: number
+  emailTo: string;
+  createdBy: number;
 }

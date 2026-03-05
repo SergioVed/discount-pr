@@ -10,10 +10,14 @@ import { TokenModule } from './TokenModule';
 @Module({
   imports: [SequelizeModule.forFeature([UserModel]), TokenModule],
   controllers: [UsersController],
-  providers: [UserService, UserMapper, {
-    provide: 'IUserRepository',
-    useClass: UserRepositoryImpl
-  }],
-  exports: [UserService, 'IUserRepository']
+  providers: [
+    UserService,
+    UserMapper,
+    {
+      provide: 'IUserRepository',
+      useClass: UserRepositoryImpl,
+    },
+  ],
+  exports: [UserService, 'IUserRepository'],
 })
 export class UsersModule {}

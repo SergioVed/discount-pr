@@ -9,49 +9,56 @@ import { canSyncGoogle } from 'src/helpers/restaurant/canSyncGoogle';
 
 @Injectable()
 export class RestaurantsService {
+  constructor(
+    @Inject('IRestaurantRepository')
+    private restaurantRepository: IRestaurantRepository,
+    @Inject('IGooglePlaceRepository')
+    private placeRepository: IGooglePlaceRepository,
+  ) {}
 
-    constructor(
-        @Inject('IRestaurantRepository') private restaurantRepository: IRestaurantRepository,
-        @Inject('IGooglePlaceRepository') private placeRepository: IGooglePlaceRepository
-    ) { }
+  async createRestaurant(dto: CreateRestaurantDto) {
+    const details = await this.placeRepository.getDetails(dto.googlePlaceId);
+    const restaurant = await this.restaurantRepository.create({
+      ...details,
+      lastSynced: new Date(),
+      googlePlaceId: dto.googlePlaceId,
+    });
+    return restaurant;
+  }
 
-    async createRestaurant(dto: CreateRestaurantDto) {
-        const details = await this.placeRepository.getDetails(dto.googlePlaceId)
-        const restaurant = await this.restaurantRepository.create({...details, lastSynced: new Date(), googlePlaceId: dto.googlePlaceId})
-        return restaurant
+  async getAllRestaurants() {
+    const restaurants = await this.restaurantRepository.getAll();
+    return restaurants;
+  }
+
+  async getOneRestaurant(restaurantId: number) {
+    const restaurant = await this.restaurantRepository.findById(restaurantId);
+    return restaurant;
+  }
+
+  async updateRestaurant(restaurantId: number, data: UpdateRestaurantDto) {
+    const restaurant = await this.restaurantRepository.findById(restaurantId);
+    if (!restaurant) {
+      throw new EntityNotFoundError('Restaurant', restaurantId);
     }
+    restaurant.updateInstance(data);
+    return await this.restaurantRepository.update(restaurant);
+  }
 
-    async getAllRestaurants() {
-        const restaurants = await this.restaurantRepository.getAll()
-        return restaurants
+  async syncRestaurant(restaurantId: number) {
+    const restaurant = await this.getOneRestaurant(restaurantId);
+    if (!restaurant) {
+      throw new EntityNotFoundError('Restaurant', restaurantId);
     }
-
-    async getOneRestaurant (restaurantId: number) {
-        const restaurant = await this.restaurantRepository.findById(restaurantId)
-        return restaurant
+    if (!canSyncGoogle(restaurant)) {
+      throw new SyncFromGoogleError(restaurant.lastSynced);
     }
+    const details = await this.placeRepository.getDetails(
+      restaurant.googlePlaceId,
+    );
 
-    async updateRestaurant (restaurantId: number, data: UpdateRestaurantDto) {
-        const restaurant = await this.restaurantRepository.findById(restaurantId);
-        if (!restaurant) {
-            throw new EntityNotFoundError("Restaurant", restaurantId)
-        }
-        restaurant.updateInstance(data)
-        return await this.restaurantRepository.update(restaurant)
-    }
-
-    async syncRestaurant (restaurantId: number) {
-        const restaurant = await this.getOneRestaurant(restaurantId)
-        if (!restaurant) {
-            throw new EntityNotFoundError("Restaurant", restaurantId)
-        }
-        if (!canSyncGoogle(restaurant)) {
-            throw new SyncFromGoogleError(restaurant.lastSynced)
-        }
-        const details = await this.placeRepository.getDetails(restaurant.googlePlaceId)
-
-        restaurant.updateInstance(details)
-        restaurant.updateLastSynced(new Date())
-        return await this.restaurantRepository.update(restaurant)
-    }
+    restaurant.updateInstance(details);
+    restaurant.updateLastSynced(new Date());
+    return await this.restaurantRepository.update(restaurant);
+  }
 }
