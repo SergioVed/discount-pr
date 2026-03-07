@@ -1,7 +1,7 @@
 import { Token } from 'src/core/entities/Token/Token';
 import { TokenModel } from '../entities/TokenModel';
 import { Injectable } from '@nestjs/common';
-import { CreateTokenDto } from 'src/core/repository/TokenRepository/dto/CreateTokenDto';
+import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
 
 @Injectable()
 export class TokenMapper {
@@ -15,7 +15,7 @@ export class TokenMapper {
       user_id: entity.userId,
     };
   }
-  toCreationPersistance(dto: CreateTokenDto) {
+  toCreationPersistance(dto: CreateTokenPersistenceDto) {
     return {
       token: dto.token,
       user_id: dto.userId,

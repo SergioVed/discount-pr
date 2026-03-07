@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RestaurantController } from '../controllers/RestaurantController';
+import { RestaurantController } from '../controllers/restaurant/RestaurantController';
 import { RestaurantsService } from 'src/core/services/RestaurantService/RestaurantService';
 import { RestaurantMapper } from 'src/infrastructure/db/mappers/RestaurantMapper';
 import { RestaurantRepositoryImpl } from 'src/infrastructure/db/repository/RestaurantRepositoryImpl';

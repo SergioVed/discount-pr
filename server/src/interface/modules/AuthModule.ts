@@ -8,7 +8,6 @@ import { UserModel } from 'src/infrastructure/db/entities/UserModel';
 import { SignInInviteModule } from './SignInInviteModule';
 import { TokenModule } from './TokenModule';
 import { UsersModule } from './UserModule';
-import { InviteValidator } from 'src/helpers/signInInvite/validateInvite';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { InviteValidator } from 'src/helpers/signInInvite/validateInvite';
     SignInInviteModule,
     UsersModule,
   ],
-  providers: [AuthService, JwtService, InviteValidator],
+  providers: [AuthService, JwtService],
   controllers: [AuthController],
 })
 export class AuthModule {}

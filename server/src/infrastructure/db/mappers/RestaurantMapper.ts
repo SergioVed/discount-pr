@@ -1,7 +1,6 @@
 import { Restaurant } from 'src/core/entities/Restaurant/Restaurant';
 import { RestaurantModel } from '../entities/RestaurantModel';
-import { CreateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantDto';
-import { UpdateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/UpdateRestarauntDto';
+import { CreateRestaurantPersistenceDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantPersistenceDto';
 
 export class RestaurantMapper {
   toDomain(entity: RestaurantModel): Restaurant {
@@ -43,7 +42,7 @@ export class RestaurantMapper {
     };
   }
 
-  toCreationPersistence(entity: CreateRestaurantDto) {
+  toCreationPersistence(entity: CreateRestaurantPersistenceDto) {
     return {
       google_place_id: entity.googlePlaceId,
       name: entity.name,

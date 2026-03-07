@@ -1,16 +1,17 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserService } from '../UserService/UserService';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from '../TokenService/TokenService';
 import { Payload } from '../TokenService/payload/payload';
-import { CreateTokenDto } from 'src/core/repository/TokenRepository/dto/CreateTokenDto';
+import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
 import { SignInInviteService } from '../SignInInviteService/SignInInviteService';
 import { EntityAlreadyExistsError } from 'src/core/errors/cases/domain/shared/EntityAlreadyExistsError';
 import { IncorrectPasswordError } from 'src/core/errors/cases/application/auth/IncorrectPasswordError';
 import { UndefinedEmailError } from 'src/core/errors/cases/application/auth/UndefinedEmailError';
-import { InviteValidator } from 'src/helpers/signInInvite/validateInvite';
 import { LoginUserInput, RegisterUserInput } from './types';
+import { Sequelize } from 'sequelize-typescript';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
         private userService: UserService,
         private tokenService: TokenService,
         private signInInviteService: SignInInviteService,
-        private inviteValidator: InviteValidator,
+        private sequelize: Sequelize
     ) { }
 
     async login(dto: LoginUserInput) {
@@ -36,7 +37,7 @@ export class AuthService {
 
         const payload = new Payload(candidate);
         const tokens = this.tokenService.generateTokens(payload);
-        const modelData: CreateTokenDto = {
+        const modelData: CreateTokenPersistenceDto = {
             token: tokens.refreshToken,
             userId: candidate.userId,
         };
@@ -48,40 +49,40 @@ export class AuthService {
         };
     }
 
-    async register(dto: RegisterUserInput, signInToken: string) {
-        const invite = await this.inviteValidator.validateInvite(signInToken);
-
-        const candidate = await this.userService.findUserByEmail(dto.email);
-        if (candidate) {
-            throw new EntityAlreadyExistsError('User', candidate.userId);
-        }
-
+    async register(dto: RegisterUserInput, token: string) {
         const password = await bcrypt.hash(dto.password, 5);
+    
+        return await this.sequelize.transaction(async (tx: Transaction) => {
 
-        const createUserPersistenceDto: CreateUserPersistenceDto = {
-            firstName: dto.firstName,
-            lastName: dto.lastName,
-            email: dto.email,
-            password: password,
-            role: 'MANAGER',
-        };
+            const invite = await this.signInInviteService.consumeOrThrowInvite(token, tx, dto.email)
 
-        const user = await this.userService.createUser(createUserPersistenceDto);
-        if (user) {
-            await this.signInInviteService.markAsUsed(invite);
-        }
+            const candidate = await this.userService.findUserByEmail(dto.email, tx);
+            if (candidate) {
+                throw new EntityAlreadyExistsError('User', candidate.userId);
+            }
 
-        const payload = new Payload(user);
-        const tokens = this.tokenService.generateTokens(payload);
-        const modelData: CreateTokenDto = {
-            token: tokens.refreshToken,
-            userId: user.userId,
-        };
-        await this.tokenService.saveToken(modelData);
+            const createUserPersistenceDto: CreateUserPersistenceDto = {
+                firstName: dto.firstName,
+                lastName: dto.lastName,
+                email: dto.email,
+                password: password,
+                role: 'MANAGER',
+            };
 
-        return {
-            user,
-            tokens,
-        };
+            const user = await this.userService.createUser(createUserPersistenceDto, tx)
+
+            const payload = new Payload(user);
+            const tokens = this.tokenService.generateTokens(payload);
+            const modelData: CreateTokenPersistenceDto = {
+                token: tokens.refreshToken,
+                userId: user.userId,
+            };
+            await this.tokenService.saveToken(modelData, tx);
+
+            return {
+                user,
+                tokens,
+            };
+        })
     }
 }

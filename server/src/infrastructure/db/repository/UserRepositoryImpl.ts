@@ -5,6 +5,7 @@ import { UserModel } from '../entities/UserModel';
 import { UserMapper } from '../mappers/UserMapper';
 import { Injectable } from '@nestjs/common';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class UserRepositoryImpl implements IUserRepository {
@@ -33,8 +34,8 @@ export class UserRepositoryImpl implements IUserRepository {
     return this.userMapper.toDomain(user);
   }
 
-  async findUserByEmail(email: string): Promise<User | null> {
-    const user = await this.userModel.findOne({ where: { email } });
+  async findUserByEmail(email: string, tx?: Transaction): Promise<User | null> {
+    const user = await this.userModel.findOne({ where: { email }, transaction: tx });
     if (!user) {
       return null;
     }
@@ -46,9 +47,9 @@ export class UserRepositoryImpl implements IUserRepository {
     return users.map((e) => this.userMapper.toDomain(e));
   }
 
-  async create(dto: CreateUserPersistenceDto): Promise<User> {
+  async create(dto: CreateUserPersistenceDto, tx: Transaction): Promise<User> {
     const modelData = this.userMapper.toCreatePersistance(dto);
-    const user = await this.userModel.create(modelData);
+    const user = await this.userModel.create(modelData, {transaction: tx});
     return this.userMapper.toDomain(user);
   }
 }

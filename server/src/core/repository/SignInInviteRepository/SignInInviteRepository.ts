@@ -1,9 +1,10 @@
 import { SignInInvite } from 'src/core/entities/SignInInvite/SignInInvite';
-import { CreateInvireDtoRepository } from './dto/CreateInviteDtoRepository';
+import { CreateInvitePersistenceDto } from './dto/CreateInvitePersistenceDto';
+import { Transaction } from 'sequelize';
 
 export interface ISignInInviteRepository {
-  create(dto: CreateInvireDtoRepository): Promise<SignInInvite>;
+  create(dto: CreateInvitePersistenceDto): Promise<SignInInvite>;
   getAll(): Promise<SignInInvite[]>;
-  getInviteByToken(token: string): Promise<SignInInvite | null>;
-  update(invite: SignInInvite): Promise<SignInInvite | null>;
+  getInviteByToken(token: string, tx: Transaction): Promise<SignInInvite | null>;
+  update(invite: SignInInvite, tx: Transaction): Promise<SignInInvite | null>;
 }

@@ -1,4 +1,5 @@
 import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Transaction } from 'sequelize';
 import { EntityNotFoundError } from 'src/core/errors/cases/application/shared/EntityNotFoundError';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
 import type { IUserRepository } from 'src/core/repository/UserRepository/UserRepository';
@@ -14,12 +15,12 @@ export class UserService {
     return await this.userRepository.getAll();
   }
 
-  async createUser(dto: CreateUserPersistenceDto) {
-    return await this.userRepository.create(dto);
+  async createUser(dto: CreateUserPersistenceDto, tx: Transaction) {
+    return await this.userRepository.create(dto, tx);
   }
 
-  async findUserByEmail(email: string) {
-    return await this.userRepository.findUserByEmail(email);
+  async findUserByEmail(email: string, tx?: Transaction) {
+    return await this.userRepository.findUserByEmail(email, tx);
   }
 
   async activateUser(id: number) {

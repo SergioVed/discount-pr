@@ -1,11 +1,10 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from 'src/core/errors/cases/application/shared/EntityNotFoundError';
 import { SyncFromGoogleError } from 'src/core/errors/cases/application/restaurant/SyncFromGoogleError';
 import type { IGooglePlaceRepository } from 'src/core/repository/GooglePlaceDetails/GooglePlace';
-import { CreateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantDto';
-import { UpdateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/UpdateRestarauntDto';
 import type { IRestaurantRepository } from 'src/core/repository/RestaurantRepository/RestaurantRepository';
 import { canSyncGoogle } from 'src/helpers/restaurant/canSyncGoogle';
+import { CreateRestaurantInput, UpdateRestaurantInput } from './types';
 
 @Injectable()
 export class RestaurantsService {
@@ -16,7 +15,7 @@ export class RestaurantsService {
     private placeRepository: IGooglePlaceRepository,
   ) {}
 
-  async createRestaurant(dto: CreateRestaurantDto) {
+  async createRestaurant(dto: CreateRestaurantInput  ) {
     const details = await this.placeRepository.getDetails(dto.googlePlaceId);
     const restaurant = await this.restaurantRepository.create({
       ...details,
@@ -36,12 +35,12 @@ export class RestaurantsService {
     return restaurant;
   }
 
-  async updateRestaurant(restaurantId: number, data: UpdateRestaurantDto) {
+  async updateRestaurant(restaurantId: number, dto: UpdateRestaurantInput) {
     const restaurant = await this.restaurantRepository.findById(restaurantId);
     if (!restaurant) {
       throw new EntityNotFoundError('Restaurant', restaurantId);
     }
-    restaurant.updateInstance(data);
+    restaurant.updateInstance(dto);
     return await this.restaurantRepository.update(restaurant);
   }
 

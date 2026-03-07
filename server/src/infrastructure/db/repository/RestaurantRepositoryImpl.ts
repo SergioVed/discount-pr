@@ -4,7 +4,7 @@ import { Restaurant } from 'src/core/entities/Restaurant/Restaurant';
 import { IRestaurantRepository } from 'src/core/repository/RestaurantRepository/RestaurantRepository';
 import { RestaurantModel } from '../entities/RestaurantModel';
 import { RestaurantMapper } from '../mappers/RestaurantMapper';
-import { CreateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantDto';
+import { CreateRestaurantPersistenceDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantPersistenceDto';
 
 @Injectable()
 export class RestaurantRepositoryImpl implements IRestaurantRepository {
@@ -36,7 +36,7 @@ export class RestaurantRepositoryImpl implements IRestaurantRepository {
     return restaurant;
   }
 
-  async create(dto: CreateRestaurantDto): Promise<Restaurant> {
+  async create(dto: CreateRestaurantPersistenceDto): Promise<Restaurant> {
     const persistence = this.restaurantMapper.toCreationPersistence(dto);
 
     const restaurant = await this.restautantModel.create(persistence);

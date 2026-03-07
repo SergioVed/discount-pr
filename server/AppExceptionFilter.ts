@@ -6,7 +6,7 @@ import { DomainError } from "src/core/errors/base/DomainError";
 export class AppExceptionFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
         const response = host.switchToHttp().getResponse()
-        const status = exception.statusCode || HttpStatus.BAD_REQUEST
+        const status = exception.statusCode ?? HttpStatus.BAD_REQUEST
 
         response.status(status).json({
             statusCode: status,

@@ -3,17 +3,18 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantDto';
+import { CreateRestaurantRequestDto } from './dto/CreateRestaurantRequestDto';
 import { RestaurantsService } from 'src/core/services/RestaurantService/RestaurantService';
-import { AuthGuard } from '../guards/AuthGuard';
-import { UpdateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/UpdateRestarauntDto';
-import { IsActivated } from '../guards/IsActivatedGuard';
-import { Roles } from '../decorators/RoleDecorator';
-import { RoleGuard } from '../guards/RoleGuard';
+import { AuthGuard } from '../../guards/AuthGuard';
+import { UpdateRestaurantRequestDto } from './dto/UpdateRestaurantRequestDto';
+import { IsActivated } from '../../guards/IsActivatedGuard';
+import { Roles } from '../../decorators/RoleDecorator';
+import { RoleGuard } from '../../guards/RoleGuard';
 
 @Controller('restaurants')
 export class RestaurantController {
@@ -22,7 +23,7 @@ export class RestaurantController {
   @Roles('ADMIN')
   @UseGuards(AuthGuard, IsActivated, RoleGuard)
   @Post()
-  async createRestaurant(@Body() body: CreateRestaurantDto) {
+  async createRestaurant(@Body() body: CreateRestaurantRequestDto) {
     const restaurant = await this.restaurantService.createRestaurant(body);
     return restaurant;
   }
@@ -36,15 +37,15 @@ export class RestaurantController {
   }
 
   @Put('sync/:id')
-  async syncRestaurant(@Param('id') id: number) {
+  async syncRestaurant(@Param('id', ParseIntPipe) id: number) {
     const restaurant = await this.restaurantService.syncRestaurant(id);
     return restaurant;
   }
 
   @Put('/:id')
   async updateRestaurant(
-    @Param('id') id: number,
-    @Body() dto: UpdateRestaurantDto,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateRestaurantRequestDto,
   ) {
     const restaurant = await this.restaurantService.updateRestaurant(id, dto);
     return restaurant;

@@ -2,7 +2,8 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { ITokenRepository } from 'src/core/repository/TokenRepository/TokenRepository';
 import { Payload } from './payload/payload';
-import { CreateTokenDto } from 'src/core/repository/TokenRepository/dto/CreateTokenDto';
+import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class TokenService {
@@ -34,12 +35,12 @@ export class TokenService {
     };
   }
 
-  async saveToken(dto: CreateTokenDto) {
-    const token = await this.tokenRepository.getOne(dto.userId);
+  async saveToken(dto: CreateTokenPersistenceDto, tx?: Transaction) {
+    const token = await this.tokenRepository.getOne(dto.userId, tx);
     if (token) {
-      return await this.tokenRepository.update(token.tokenId, dto.token);
+      return await this.tokenRepository.update(token.tokenId, dto.token, tx);
     }
-    return await this.tokenRepository.create(dto);
+    return await this.tokenRepository.create(dto, tx);
   }
 
   validateRefresh(refresh: string) {

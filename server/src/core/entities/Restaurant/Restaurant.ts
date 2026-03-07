@@ -1,4 +1,4 @@
-import { UpdateRestaurantDto } from 'src/core/repository/RestaurantRepository/dto/UpdateRestarauntDto';
+import { UpdateRestaurantProps } from './types';
 
 export class Restaurant {
   constructor(
@@ -86,7 +86,7 @@ export class Restaurant {
     this._lastSynced = date;
   }
 
-  updateInstance(data: UpdateRestaurantDto) {
+  updateInstance(data: UpdateRestaurantProps) {
     if (data.name !== undefined) this._name = data.name;
     if (data.types !== undefined) this._types = data.types;
     if (data.googlemapsLink !== undefined)

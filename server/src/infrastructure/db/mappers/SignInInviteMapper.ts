@@ -2,7 +2,7 @@ import { Token } from 'src/core/entities/Token/Token';
 import { Injectable } from '@nestjs/common';
 import { SignInInviteModel } from '../entities/SignInInviteModel';
 import { SignInInvite } from 'src/core/entities/SignInInvite/SignInInvite';
-import { CreateInvireDtoRepository } from 'src/core/repository/SignInInviteRepository/dto/CreateInviteDtoRepository';
+import { CreateInvitePersistenceDto } from 'src/core/repository/SignInInviteRepository/dto/CreateInvitePersistenceDto';
 
 @Injectable()
 export class SignInInviteMapper {
@@ -26,7 +26,7 @@ export class SignInInviteMapper {
       expires_at: entity.expiresAt,
     };
   }
-  toCreationPersistance(dto: CreateInvireDtoRepository) {
+  toCreationPersistance(dto: CreateInvitePersistenceDto) {
     return {
       token: dto.token,
       email_to: dto.emailTo,

@@ -1,4 +1,4 @@
-export class CreateRestaurantDto {
+export class CreateRestaurantPersistenceDto {
   readonly googlePlaceId: string;
   readonly name: string;
   readonly types: string[];
