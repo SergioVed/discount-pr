@@ -1,7 +1,7 @@
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { ITokenRepository } from 'src/core/repository/TokenRepository/TokenRepository';
-import { Payload } from './payload/payload';
+import { Payload } from './payload';
 import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
 import { Transaction } from 'sequelize';
 
@@ -44,10 +44,14 @@ export class TokenService {
   }
 
   validateRefresh(refresh: string) {
-    const userData = this.jwtService.verify(refresh, {
-      secret: process.env.REFRESH_SECRET,
-    });
-    return userData;
+    try {
+      const userData = this.jwtService.verify(refresh, {
+        secret: process.env.REFRESH_SECRET,
+      });
+      return userData;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid or expired token')
+    }
   }
 
   validateAccess(token: string) {

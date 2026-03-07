@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../UserService/UserService';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from '../TokenService/TokenService';
-import { Payload } from '../TokenService/payload/payload';
+import { Payload } from '../TokenService/payload';
 import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
 import { SignInInviteService } from '../SignInInviteService/SignInInviteService';
@@ -12,6 +12,7 @@ import { UndefinedEmailError } from 'src/core/errors/cases/application/auth/Unde
 import { LoginUserInput, RegisterUserInput } from './types';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
+import { TokenHelper } from 'src/helpers/token/tokenHelper';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,8 @@ export class AuthService {
         private userService: UserService,
         private tokenService: TokenService,
         private signInInviteService: SignInInviteService,
-        private sequelize: Sequelize
+        private sequelize: Sequelize,
+        private tokenHelper: TokenHelper
     ) { }
 
     async login(dto: LoginUserInput) {
@@ -35,13 +37,7 @@ export class AuthService {
             throw new IncorrectPasswordError();
         }
 
-        const payload = new Payload(candidate);
-        const tokens = this.tokenService.generateTokens(payload);
-        const modelData: CreateTokenPersistenceDto = {
-            token: tokens.refreshToken,
-            userId: candidate.userId,
-        };
-        await this.tokenService.saveToken(modelData);
+        const tokens = await this.tokenHelper.saveToken(candidate)
 
         return {
             candidate,
@@ -71,13 +67,7 @@ export class AuthService {
 
             const user = await this.userService.createUser(createUserPersistenceDto, tx)
 
-            const payload = new Payload(user);
-            const tokens = this.tokenService.generateTokens(payload);
-            const modelData: CreateTokenPersistenceDto = {
-                token: tokens.refreshToken,
-                userId: user.userId,
-            };
-            await this.tokenService.saveToken(modelData, tx);
+            const tokens = await this.tokenHelper.saveToken(user, tx)
 
             return {
                 user,

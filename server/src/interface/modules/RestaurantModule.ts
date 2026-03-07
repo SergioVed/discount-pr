@@ -7,12 +7,14 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { RestaurantModel } from 'src/infrastructure/db/entities/RestaurantModel';
 import { GooglePlaceRepositoryImpl } from 'src/infrastructure/db/repository/GooglePlaceRepositoryImpl';
 import { TokenModule } from './TokenModule';
+import { TokenHelper } from 'src/helpers/token/tokenHelper';
 
 @Module({
   imports: [SequelizeModule.forFeature([RestaurantModel]), TokenModule],
   providers: [
     RestaurantsService,
     RestaurantMapper,
+    TokenHelper,
     {
       provide: 'IRestaurantRepository',
       useClass: RestaurantRepositoryImpl,

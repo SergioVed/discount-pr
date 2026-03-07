@@ -6,12 +6,14 @@ import { SignInInviteMapper } from 'src/infrastructure/db/mappers/SignInInviteMa
 import { SignInInviteRepositoryImpl } from 'src/infrastructure/db/repository/SignInInviteRepositoryImpl';
 import { SignInInviteController } from '../controllers/invites/SignInInviteController';
 import { TokenModule } from './TokenModule';
+import { TokenHelper } from 'src/helpers/token/tokenHelper';
 
 @Module({
   imports: [SequelizeModule.forFeature([SignInInviteModel]), TokenModule],
   providers: [
     SignInInviteMapper,
     SignInInviteService,
+    TokenHelper,
     {
       provide: 'ISignInInviteRepository',
       useClass: SignInInviteRepositoryImpl,

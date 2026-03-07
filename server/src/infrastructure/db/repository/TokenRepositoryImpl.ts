@@ -30,7 +30,7 @@ export class TokenRepositoryImpl implements ITokenRepository {
     const refresh_token = await this.tokenModel.findOne({where: {token_id: tokenId}, transaction: tx});
     if (refresh_token) {
       refresh_token.token = token;
-      await refresh_token.save();
+      await refresh_token.save({transaction: tx});
     } else if (!refresh_token) {
       return null;
     }

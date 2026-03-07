@@ -8,6 +8,7 @@ import { UserModel } from 'src/infrastructure/db/entities/UserModel';
 import { SignInInviteModule } from './SignInInviteModule';
 import { TokenModule } from './TokenModule';
 import { UsersModule } from './UserModule';
+import { TokenHelper } from 'src/helpers/token/tokenHelper';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UsersModule } from './UserModule';
     SignInInviteModule,
     UsersModule,
   ],
-  providers: [AuthService, JwtService],
+  providers: [AuthService, JwtService, TokenHelper],
   controllers: [AuthController],
 })
 export class AuthModule {}

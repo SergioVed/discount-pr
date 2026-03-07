@@ -6,6 +6,7 @@ import { UserService } from 'src/core/services/UserService/UserService';
 import { UserRepositoryImpl } from 'src/infrastructure/db/repository/UserRepositoryImpl';
 import { UserMapper } from 'src/infrastructure/db/mappers/UserMapper';
 import { TokenModule } from './TokenModule';
+import { TokenHelper } from 'src/helpers/token/tokenHelper';
 
 @Module({
   imports: [SequelizeModule.forFeature([UserModel]), TokenModule],
@@ -13,6 +14,7 @@ import { TokenModule } from './TokenModule';
   providers: [
     UserService,
     UserMapper,
+    TokenHelper,
     {
       provide: 'IUserRepository',
       useClass: UserRepositoryImpl,
