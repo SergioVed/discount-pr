@@ -2,16 +2,8 @@ import { SpecialOffer } from 'src/core/entities/SpecialOffer/SpecialOffer';
 import { SpecialOfferModel } from '../entities/SpecialOfferModel';
 import { Injectable } from '@nestjs/common';
 
-interface Mapper<T, E> {
-  toDomain(entity: T): E;
-  toModel(entity: E): any;
-}
-
 @Injectable()
-export class SpecialOfferMapper implements Mapper<
-  SpecialOfferModel,
-  SpecialOffer
-> {
+export class SpecialOfferMapper {
   toDomain(entity: SpecialOfferModel): SpecialOffer {
     return new SpecialOffer(
       entity.special_offer_id,
@@ -35,5 +27,16 @@ export class SpecialOfferMapper implements Mapper<
       active_from: entity.activeFrom,
       active_to: entity.activeTo,
     };
+  }
+  toCreationPersistence(offer: SpecialOffer) {
+    return {
+      created_by: offer.createdBy,
+      restaurant_id: offer.restaurantId,
+      title: offer.title,
+      description: offer.description,
+      isActive: offer.isActive,
+      active_from: offer.activeFrom,
+      active_to: offer.activeTo,
+    }
   }
 }

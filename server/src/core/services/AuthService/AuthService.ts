@@ -66,7 +66,6 @@ export class AuthService {
             };
 
             const user = await this.userService.createUser(createUserPersistenceDto, tx)
-
             const tokens = await this.tokenHelper.saveToken(user, tx)
 
             return {
