@@ -5,6 +5,7 @@ import { IRestaurantRepository } from 'src/core/repository/RestaurantRepository/
 import { RestaurantModel } from '../entities/RestaurantModel';
 import { RestaurantMapper } from '../mappers/RestaurantMapper';
 import { CreateRestaurantPersistenceDto } from 'src/core/repository/RestaurantRepository/dto/CreateRestaurantPersistenceDto';
+import { Transaction } from 'sequelize';
 
 @Injectable()
 export class RestaurantRepositoryImpl implements IRestaurantRepository {
@@ -14,20 +15,21 @@ export class RestaurantRepositoryImpl implements IRestaurantRepository {
     private restaurantMapper: RestaurantMapper,
   ) {}
 
-  async findById(restaurantId: number): Promise<Restaurant | null> {
-    const restaurant = await this.restautantModel.findByPk(restaurantId);
+  async findById(restaurantId: number, tx: Transaction): Promise<Restaurant | null> {
+    const restaurant = await this.restautantModel.findByPk(restaurantId, {transaction: tx});
     if (!restaurant) {
       return null;
     }
     return this.restaurantMapper.toDomain(restaurant);
   }
 
-  async update(restaurant: Restaurant): Promise<Restaurant | null> {
+  async update(restaurant: Restaurant, tx: Transaction): Promise<Restaurant | null> {
     const persistence = this.restaurantMapper.toPersistence(restaurant);
 
     const [affectedRows] = await this.restautantModel.update(persistence, {
       where: { restaurant_id: restaurant.restaurantId },
       returning: true,
+      transaction: tx
     });
     if (affectedRows == 0) {
       return null;

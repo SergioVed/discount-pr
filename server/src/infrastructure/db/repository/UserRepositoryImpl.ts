@@ -26,8 +26,8 @@ export class UserRepositoryImpl implements IUserRepository {
     return user;
   }
 
-  async findById(id: number): Promise<User | null> {
-    const user = await this.userModel.findByPk(id);
+  async findById(id: number, tx?: Transaction): Promise<User | null> {
+    const user = await this.userModel.findByPk(id, {transaction: tx});
     if (!user) {
       return null;
     }

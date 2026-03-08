@@ -1,6 +1,6 @@
 import { ClaimRequest } from 'src/core/entities/ClaimRestaurantRequest/ClaimRestaurantRequest';
 import { ClaimRequestModel } from '../entities/ClaimRequestModel';
-import { CreateRequestDto } from 'src/core/repository/ClaimRestaurantRequest/dto/CreateRequestDto';
+import { CreateRequestPersistenceDto } from 'src/core/repository/ClaimRestaurantRequest/dto/CreateRequestPersistenceDto';
 
 export class ClaimRequestMapper {
   toDomain(entity: ClaimRequestModel): ClaimRequest {
@@ -19,7 +19,7 @@ export class ClaimRequestMapper {
       status: entity.status,
     };
   }
-  toCreationPersistence(dto: CreateRequestDto) {
+  toCreationPersistence(dto: CreateRequestPersistenceDto) {
     return {
       user_id: dto.userId,
       restaurant_id: dto.restaurantId,

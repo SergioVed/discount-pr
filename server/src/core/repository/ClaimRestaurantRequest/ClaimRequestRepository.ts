@@ -1,9 +1,10 @@
 import { ClaimRequest } from 'src/core/entities/ClaimRestaurantRequest/ClaimRestaurantRequest';
-import { CreateRequestDto } from './dto/CreateRequestDto';
+import { CreateRequestPersistenceDto } from './dto/CreateRequestPersistenceDto';
+import { Transaction } from 'sequelize';
 
 export interface IClaimRequestRepository {
-  create(dto: CreateRequestDto): Promise<ClaimRequest>;
+  create(dto: CreateRequestPersistenceDto): Promise<ClaimRequest>;
   getAll(): Promise<ClaimRequest[]>;
-  update(request: ClaimRequest): Promise<ClaimRequest | null>;
-  findById(requestId: number): Promise<ClaimRequest | null>;
+  update(request: ClaimRequest, tx?: Transaction): Promise<ClaimRequest | null>;
+  findById(requestId: number, tx: Transaction): Promise<ClaimRequest | null>;
 }

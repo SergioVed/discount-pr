@@ -1,4 +1,8 @@
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { UpdateRestaurantProps } from './types';
+import { EntityNotFoundError } from 'src/core/errors/cases/application/shared/EntityNotFoundError';
+import { ConflictException } from '@nestjs/common';
+import { AlreadyHasManagerError } from 'src/core/errors/cases/domain/restaurant/AlreadyHasManagerError';
 
 export class Restaurant {
   constructor(
@@ -77,7 +81,7 @@ export class Restaurant {
 
   assignManager(managerId: number) {
     if (this._managerId !== null) {
-      throw new Error('Restaurant already has a manager assigned');
+      throw new AlreadyHasManagerError(this.restaurantId);
     }
     this._managerId = managerId;
   }
