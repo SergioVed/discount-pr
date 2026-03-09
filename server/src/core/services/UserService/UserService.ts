@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Transaction } from 'sequelize';
 import { EntityNotFoundError } from 'src/core/errors/cases/application/shared/EntityNotFoundError';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
@@ -29,6 +29,12 @@ export class UserService {
       throw new EntityNotFoundError('User', id);
     }
     user.activate();
-    return this.userRepository.update(user);
+
+    const updated = await this.userRepository.update(user);
+    if (!updated) {
+      throw new EntityNotFoundError('User', id);
+    }
+
+    return updated;
   }
 }

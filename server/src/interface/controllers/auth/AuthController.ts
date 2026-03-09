@@ -1,8 +1,8 @@
-import { Body, Controller, Inject, Param, ParseUUIDPipe, Post } from '@nestjs/common';
+import { Body, Controller, Param, ParseUUIDPipe, Post } from '@nestjs/common';
 import { CreateUserRequestDto } from './dto/CreateUserRequestDto';
 import { AuthService } from 'src/core/services/AuthService/AuthService';
 import { LoginRequestDto } from './dto/LoginRequestDto';
-import { version } from 'os';
+import { AuthResponseMapper } from './mapper/AuthResponseMapper';
 
 @Controller('auth')
 export class AuthController {
@@ -10,7 +10,8 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() body: LoginRequestDto) {
-    return await this.authService.login(body);
+    const result = await this.authService.login(body);
+    return AuthResponseMapper.toLoginResponse(result.candidate, result.tokens);
   }
 
   @Post('register/:token')
@@ -18,6 +19,7 @@ export class AuthController {
     @Body() dto: CreateUserRequestDto,
     @Param('token', ParseUUIDPipe) token: string,
   ) {
-    return await this.authService.register(dto, token);
+    const result = await this.authService.register(dto, token);
+    return AuthResponseMapper.toRegisterResponse(result.user, result.tokens);
   }
 }

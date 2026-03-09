@@ -2,7 +2,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { User } from 'src/core/entities/User/User';
 import { IUserRepository } from 'src/core/repository/UserRepository/UserRepository';
 import { UserModel } from '../entities/UserModel';
-import { UserMapper } from '../mappers/UserMapper';
+import { UserPersistenceMapper } from '../mappers/UserPersistenceMapper';
 import { Injectable } from '@nestjs/common';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
 import { Transaction } from 'sequelize';
@@ -11,7 +11,7 @@ import { Transaction } from 'sequelize';
 export class UserRepositoryImpl implements IUserRepository {
   constructor(
     @InjectModel(UserModel) private userModel: typeof UserModel,
-    private userMapper: UserMapper,
+    private userMapper: UserPersistenceMapper,
   ) {}
 
   async update(user: User): Promise<User | null> {

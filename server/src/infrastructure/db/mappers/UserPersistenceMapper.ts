@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserPersistenceDto } from 'src/core/repository/UserRepository/dto/CreateUserPersistenceDto';
 
 @Injectable()
-export class UserMapper {
+export class UserPersistenceMapper {
   toDomain(entity: UserModel): User {
     return new User(
       entity.user_id,

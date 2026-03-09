@@ -15,7 +15,7 @@ export class RestaurantsService {
     private placeRepository: IGooglePlaceRepository,
   ) {}
 
-  async createRestaurant(dto: CreateRestaurantInput  ) {
+  async createRestaurant(dto: CreateRestaurantInput) {
     const details = await this.placeRepository.getDetails(dto.googlePlaceId);
     const restaurant = await this.restaurantRepository.create({
       ...details,
@@ -40,8 +40,14 @@ export class RestaurantsService {
     if (!restaurant) {
       throw new EntityNotFoundError('Restaurant', restaurantId);
     }
+
     restaurant.updateInstance(dto);
-    return await this.restaurantRepository.update(restaurant);
+    const updated = await this.restaurantRepository.update(restaurant);
+    if (!updated) {
+      throw new EntityNotFoundError('Restaurant', restaurantId);
+    }
+
+    return updated;
   }
 
   async syncRestaurant(restaurantId: number) {
@@ -52,12 +58,16 @@ export class RestaurantsService {
     if (!canSyncGoogle(restaurant)) {
       throw new SyncFromGoogleError(restaurant.lastSynced);
     }
-    const details = await this.placeRepository.getDetails(
-      restaurant.googlePlaceId,
-    );
 
+    const details = await this.placeRepository.getDetails(restaurant.googlePlaceId);
     restaurant.updateInstance(details);
     restaurant.updateLastSynced(new Date());
-    return await this.restaurantRepository.update(restaurant);
+
+    const updated = await this.restaurantRepository.update(restaurant);
+    if (!updated) {
+      throw new EntityNotFoundError('Restaurant', restaurantId);
+    }
+
+    return updated;
   }
 }

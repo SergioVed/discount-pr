@@ -1,4 +1,5 @@
 import { RoleInvalidError } from 'src/core/errors/cases/domain/user/RoleInvalidError';
+import { UserAlreadyActivatedError } from 'src/core/errors/cases/domain/user/UserAlreadyActivatedError';
 
 export class User {
   constructor(
@@ -41,7 +42,7 @@ export class User {
 
   activate() {
     if (this._isActive == true) {
-      throw new Error('User is already activated');
+      throw new UserAlreadyActivatedError(this._userId);
     }
     this._isActive = true;
   }

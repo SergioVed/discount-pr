@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ClaimRequestService } from 'src/core/services/ClaimRequestService/ClaimRequestService';
 import { CreatecClaimRequestDto } from './dto/CreateClaimRequestDto';
 import { AuthGuard } from 'src/interface/guards/AuthGuard';
@@ -6,6 +16,7 @@ import { RoleGuard } from 'src/interface/guards/RoleGuard';
 import { Roles } from 'src/interface/decorators/RoleDecorator';
 import { IsActivated } from 'src/interface/guards/IsActivatedGuard';
 import { UpdateClaimRequestDto } from './dto/UpdateClaimRequestDto';
+import { ClaimRequestResponseMapper } from './mapper/ClaimRequestResponseMapper';
 
 @Controller('requests')
 export class ClaimRequestController {
@@ -15,16 +26,16 @@ export class ClaimRequestController {
   @UseGuards(AuthGuard, RoleGuard, IsActivated)
   @Post()
   async createRequest(@Body() dto: CreatecClaimRequestDto, @Req() req: any) {
-    const restaurant = await this.claimRequestService.createRequest(dto, req);
-    return restaurant;
+    const request = await this.claimRequestService.createRequest(dto, req);
+    return ClaimRequestResponseMapper.toResponse(request);
   }
 
   @Roles('ADMIN')
   @UseGuards(AuthGuard, RoleGuard, IsActivated)
   @Get()
   async getAllRequests() {
-    const restaurants = await this.claimRequestService.getAllRequests();
-    return restaurants;
+    const requests = await this.claimRequestService.getAllRequests();
+    return requests.map((request) => ClaimRequestResponseMapper.toResponse(request));
   }
 
   @Roles('ADMIN')
@@ -34,10 +45,7 @@ export class ClaimRequestController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: UpdateClaimRequestDto,
   ) {
-    const request = await this.claimRequestService.updateRequest(
-      id,
-      body.status,
-    );
-    return request;
+    const request = await this.claimRequestService.updateRequest(id, body.status);
+    return ClaimRequestResponseMapper.toResponse(request);
   }
 }

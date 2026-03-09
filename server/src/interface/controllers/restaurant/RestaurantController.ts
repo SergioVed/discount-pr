@@ -15,6 +15,7 @@ import { UpdateRestaurantRequestDto } from './dto/UpdateRestaurantRequestDto';
 import { IsActivated } from '../../guards/IsActivatedGuard';
 import { Roles } from '../../decorators/RoleDecorator';
 import { RoleGuard } from '../../guards/RoleGuard';
+import { RestaurantResponseMapper } from './mapper/RestaurantResponseMapper';
 
 @Controller('restaurants')
 export class RestaurantController {
@@ -25,7 +26,7 @@ export class RestaurantController {
   @Post()
   async createRestaurant(@Body() body: CreateRestaurantRequestDto) {
     const restaurant = await this.restaurantService.createRestaurant(body);
-    return restaurant;
+    return RestaurantResponseMapper.toResponse(restaurant);
   }
 
   @Roles('ADMIN')
@@ -33,13 +34,15 @@ export class RestaurantController {
   @Get()
   async getAllRestaurants() {
     const restaurants = await this.restaurantService.getAllRestaurants();
-    return restaurants;
+    return restaurants.map((restaurant) =>
+      RestaurantResponseMapper.toResponse(restaurant),
+    );
   }
 
   @Put('sync/:id')
   async syncRestaurant(@Param('id', ParseIntPipe) id: number) {
     const restaurant = await this.restaurantService.syncRestaurant(id);
-    return restaurant;
+    return RestaurantResponseMapper.toResponse(restaurant);
   }
 
   @Put('/:id')
@@ -48,6 +51,6 @@ export class RestaurantController {
     @Body() dto: UpdateRestaurantRequestDto,
   ) {
     const restaurant = await this.restaurantService.updateRestaurant(id, dto);
-    return restaurant;
+    return RestaurantResponseMapper.toResponse(restaurant);
   }
 }

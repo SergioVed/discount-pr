@@ -12,6 +12,7 @@ import { Roles } from '../../decorators/RoleDecorator';
 import { AuthGuard } from '../../guards/AuthGuard';
 import { IsActivated } from '../../guards/IsActivatedGuard';
 import { CreateInviteRequestDto } from './dto/CreateInviteRequestDto';
+import { SignInInviteResponseMapper } from './mapper/SignInInviteResponseMapper';
 
 @Controller('invites')
 export class SignInInviteController {
@@ -25,15 +26,14 @@ export class SignInInviteController {
       ...dto,
       createdBy: req.user._userId,
     });
-    return invite;
+    return SignInInviteResponseMapper.toResponse(invite);
   }
-
 
   @Roles('ADMIN')
   @UseGuards(AuthGuard, RoleGuard, IsActivated)
   @Get()
   async getAllInvites() {
     const invites = await this.signInInviteService.getAllInvites();
-    return invites;
+    return invites.map((invite) => SignInInviteResponseMapper.toResponse(invite));
   }
 }
