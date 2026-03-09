@@ -25,7 +25,7 @@ export class SignInInviteRepositoryImpl implements ISignInInviteRepository {
   }
 
   async getInviteByToken(token: string, tx: Transaction): Promise<SignInInvite | null> {
-    const invite = await this.signInInviteModel.findOne({ where: { token }, lock: tx.LOCK.UPDATE});
+    const invite = await this.signInInviteModel.findOne({ where: { token }, transaction: tx, lock: tx.LOCK.UPDATE});
     if (!invite) {
       return null;
     }

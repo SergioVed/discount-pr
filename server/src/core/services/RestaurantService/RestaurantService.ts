@@ -5,14 +5,15 @@ import type { IGooglePlaceRepository } from 'src/core/repository/GooglePlaceDeta
 import type { IRestaurantRepository } from 'src/core/repository/RestaurantRepository/RestaurantRepository';
 import { canSyncGoogle } from 'src/helpers/restaurant/canSyncGoogle';
 import { CreateRestaurantInput, UpdateRestaurantInput } from './types';
+import { InvalidManagerId } from 'src/core/errors/cases/application/specialOffer/InvalidManagerId';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class RestaurantsService {
   constructor(
-    @Inject('IRestaurantRepository')
-    private restaurantRepository: IRestaurantRepository,
-    @Inject('IGooglePlaceRepository')
-    private placeRepository: IGooglePlaceRepository,
+    @Inject('IRestaurantRepository') private restaurantRepository: IRestaurantRepository,
+    @Inject('IGooglePlaceRepository') private placeRepository: IGooglePlaceRepository,
+    private sequelize: Sequelize
   ) {}
 
   async createRestaurant(dto: CreateRestaurantInput) {
@@ -50,7 +51,25 @@ export class RestaurantsService {
     return updated;
   }
 
-  async syncRestaurant(restaurantId: number) {
+  async syncRestaurant(restaurantId: number, userId: number) {
+    const restaurant = await this.getOrThrowRestaurant(restaurantId, userId)
+
+    return await this.sequelize.transaction(async(tx) => {
+
+      const details = await this.placeRepository.getDetails(restaurant.googlePlaceId);
+      restaurant.updateInstance(details);
+      restaurant.updateLastSynced(new Date());
+
+      const updated = await this.restaurantRepository.update(restaurant, tx);
+      if (!updated) {
+        throw new EntityNotFoundError('Restaurant', restaurantId);
+      }
+
+      return updated;
+    })
+  }
+
+  private async getOrThrowRestaurant (restaurantId: number, userId: number) {
     const restaurant = await this.getOneRestaurant(restaurantId);
     if (!restaurant) {
       throw new EntityNotFoundError('Restaurant', restaurantId);
@@ -58,16 +77,10 @@ export class RestaurantsService {
     if (!canSyncGoogle(restaurant)) {
       throw new SyncFromGoogleError(restaurant.lastSynced);
     }
-
-    const details = await this.placeRepository.getDetails(restaurant.googlePlaceId);
-    restaurant.updateInstance(details);
-    restaurant.updateLastSynced(new Date());
-
-    const updated = await this.restaurantRepository.update(restaurant);
-    if (!updated) {
-      throw new EntityNotFoundError('Restaurant', restaurantId);
+    if (userId != restaurant.managerId) {
+      throw new InvalidManagerId(userId)
     }
 
-    return updated;
+    return restaurant
   }
 }

@@ -4,6 +4,7 @@ import type { ITokenRepository } from 'src/core/repository/TokenRepository/Token
 import { Payload } from './payload';
 import { CreateTokenPersistenceDto } from 'src/core/repository/TokenRepository/dto/CreateTokenPersistenceDto';
 import { Transaction } from 'sequelize';
+import { EntityNotFoundError } from 'src/core/errors/cases/application/shared/EntityNotFoundError';
 
 @Injectable()
 export class TokenService {
@@ -37,10 +38,13 @@ export class TokenService {
 
   async saveToken(dto: CreateTokenPersistenceDto, tx?: Transaction) {
     const token = await this.tokenRepository.getOne(dto.userId, tx);
-    if (token) {
-      return await this.tokenRepository.update(token.tokenId, dto.token, tx);
+    const saved = token 
+      ? await this.tokenRepository.update(token.tokenId, dto.token, tx)
+      : await this.tokenRepository.create(dto, tx)
+    if (!saved) {
+      throw new EntityNotFoundError("Token", token?.tokenId)
     }
-    return await this.tokenRepository.create(dto, tx);
+    return saved
   }
 
   validateRefresh(refresh: string) {

@@ -6,6 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreateRestaurantRequestDto } from './dto/CreateRestaurantRequestDto';
@@ -39,12 +40,16 @@ export class RestaurantController {
     );
   }
 
+  @Roles('ADMIN', 'MANAGER')
+  @UseGuards(AuthGuard, IsActivated, RoleGuard)
   @Put('sync/:id')
-  async syncRestaurant(@Param('id', ParseIntPipe) id: number) {
-    const restaurant = await this.restaurantService.syncRestaurant(id);
+  async syncRestaurant(@Param('id', ParseIntPipe) id: number,  @Req() req: any) {
+    const restaurant = await this.restaurantService.syncRestaurant(id, req.user._userId);
     return RestaurantResponseMapper.toResponse(restaurant);
   }
 
+  @Roles('ADMIN')
+  @UseGuards(AuthGuard, IsActivated, RoleGuard)
   @Put('/:id')
   async updateRestaurant(
     @Param('id', ParseIntPipe) id: number,

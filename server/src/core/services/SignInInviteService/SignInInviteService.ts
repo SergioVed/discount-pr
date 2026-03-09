@@ -38,7 +38,7 @@ export class SignInInviteService {
     const invite = await this.signInInviteRepository.getInviteByToken(token, tx)
     if (!invite) throw new EntityNotFoundError("Invite")
     if (invite.expiresAt < new Date()) throw new InviteExpiredError
-    if (invite.emailTo.toLocaleLowerCase() !== email) throw new InviteNotFoundError(token, {email: email, message: "Email in invite not equals to email in dto"})
+    if (invite.emailTo.toLowerCase() !== email.toLowerCase()) throw new InviteNotFoundError(token, {email: email, message: "Email in invite not equals to email in dto"})
     if (invite.usedAt) throw new InviteUsedError(invite.usedAt)
     
     invite.markAsUsed()

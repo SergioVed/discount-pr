@@ -18,9 +18,6 @@ export class SpecialOfferService {
     const activeFrom = dto.activeFrom ?? new Date()
     const activeTo = dto.activeTo
 
-    console.log(activeTo)
-    console.log(new Date(dto.activeTo))
-
     const offer = SpecialOffer.create({ ...dto, createdBy: userId, activeFrom, activeTo })
     const restaurant = await this.restaurantRepository.findById(dto.restaurantId)
     if (!restaurant) {

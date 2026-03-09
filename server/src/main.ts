@@ -13,7 +13,7 @@ const start = async () => {
     app.use(cookieParser());
     app.useGlobalFilters(new AppExceptionFilter());
     app.useGlobalPipes(
-      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
     );
     app.listen(PORT, () => console.log(`server started on PORT ${PORT}`));
   } catch (error) {

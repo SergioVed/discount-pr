@@ -26,8 +26,6 @@ export class GooglePlaceRepositoryImpl implements IGooglePlaceRepository {
       },
     });
 
-    console.log(response.data);
-
     const res = response.data.result;
     return new PlaceDetails(
       res.name ?? '',

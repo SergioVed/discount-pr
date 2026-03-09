@@ -46,7 +46,8 @@ export class AuthService {
     }
 
     async register(dto: RegisterUserInput, token: string) {
-        const password = await bcrypt.hash(dto.password, 5);
+        const rounds = Number(process.env.BCRYPT_ROUNDS ?? 12)
+        const password = await bcrypt.hash(dto.password, rounds);
     
         return await this.sequelize.transaction(async (tx: Transaction) => {
 
